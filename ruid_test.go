@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	cv "github.com/smartystreets/goconvey/convey"
+	"github.com/twinj/uuid"
 )
 
 func TestRuid(t *testing.T) {
@@ -53,5 +54,12 @@ func BenchmarkHuid(b *testing.B) {
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		ruidGen.Huid()
+	}
+}
+
+func BenchmarkUUID4(b *testing.B) {
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		uuid.NewV4()
 	}
 }
