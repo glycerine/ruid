@@ -31,12 +31,13 @@ type RuidGen struct {
 //
 // NewRuidGen(): uniqueLocation should be a byte
 // sequence that is unique to this specific physical location.
-// Suggestions: a hardware
-// mac address, your external ip address, the traceroute out
+// Suggestions: a unique external IP address, a hardware
+// mac address, or the traceroute out
 // a known distant location on the public internet.
 // The uniqueLocation should be as unique as possible.
-// It will be crypto hashed down to 20 bytes.
-//
+// It will be sha1 hashed down to 20 bytes, so it is allowed
+// to be longer.
+
 func NewRuidGen(uniqueLocation string) *RuidGen {
 
 	r := &RuidGen{}
@@ -48,27 +49,31 @@ func NewRuidGen(uniqueLocation string) *RuidGen {
 }
 
 func (r *RuidGen) Huid() string {
-	huid := r.huidBase()
-	return fmt.Sprintf("huid_v%02d_%s", RuidVer, base64.URLEncoding.EncodeToString([]byte(huid)))
-}
-
-func (r *RuidGen) huidBase() string {
-
 	tm := time.Now()
-
 	r.counter++
 
-	return fmt.Sprintf("|tm:%s|pid:%010d|loc:%s|seq:%020d|",
+	huid := fmt.Sprintf("|tm:%s|pid:%010d|loc:%s|seq:%020d|",
 		tm.Format(time.RFC3339Nano),
 		r.pid,
 		r.base64uniqLoc,
 		r.counter)
+
+	return fmt.Sprintf("huid_v%02d_%s", RuidVer, base64.URLEncoding.EncodeToString([]byte(huid)))
 }
 
 // A Ruid applies a sha1sum to a Huid.
 func (r *RuidGen) Ruid() string {
 
-	res := sha1.Sum([]byte(r.huidBase()))
+	tm := time.Now()
+	r.counter++
+
+	huid := fmt.Sprintf("|tm:%s|pid:%010d|loc:%s|seq:%020d|",
+		tm.Format(time.RFC3339Nano),
+		r.pid,
+		r.base64uniqLoc,
+		r.counter)
+
+	res := sha1.Sum([]byte(huid))
 	ruid := fmt.Sprintf("ruid_v%02d_%s", RuidVer, base64.URLEncoding.EncodeToString(res[:]))
 
 	return ruid
