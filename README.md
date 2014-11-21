@@ -1,12 +1,13 @@
 Ruid: a really unique id
 ================
 
-A Ruid is a really unique id. It is very fast to generate, and is an opaque identifier.
+A Huid is a really unique id. It is very fast to generate, and is base64-decodable to be human readable.
 
-A Huid is a really unique id. It is very fast to generate, and is decodable to be human readable.
+A Ruid is a really unique id. It is very fast to generate, and is an opaque identifier. It is the SHA1 hash of a Huid.
+
 
 The bytes in a Ruid always start with `ruid_v` and
-be followed by two digits of version identifier and an '_'
+are followed by two digits of version identifier and an '_'
 underscore before the variable portion starts.
 
 ~~~
@@ -21,7 +22,7 @@ huid_v01_fHRtOjIwMTQtMTEtMjBUMTc6NDQ6NDcuNDQ0NzU1NDE5LTA4OjAwfHBpZDowMDAwMDEwODc
 huid_v01_fHRtOjIwMTQtMTEtMjBUMTc6NDQ6NDcuNDQ0NzYwMTczLTA4OjAwfHBpZDowMDAwMDEwODc3fGxvYzpFNHlvWHBpZmlsa2ctVWNsM1dSemg5LWdOSFU9fHNlcTowMDAwMDAwMDAwMDAwMDAwMDAwNHw=
 ~~~
 
-The huid will decode to lines similar to these:
+The huid will base64 decode (use the url safe version) to lines similar to these:
 
 ~~~
 |tm:2014-11-20T17:39:06.824687644-08:00|pid:0000010801|loc:E4yoXpifilkg-Ucl3WRzh9-gNHU=|seq:00000000000000000003|
@@ -39,9 +40,8 @@ will base64 decode to an opaque identifier, a
 SHA1 hash. If you use both, instantiate seperate Generators,
 as Huid and Ruid utilize the same sequence counter.
 
-Brief benchmarks on my laptop suggest a cost of less than 4 usec to
-generate a Ruid or a Huid. At that rate you could generate 250K/second/core
-if you needed to.
+Brief benchmarks on my laptop suggest that it costs less than 4 usec to
+generate a Ruid or a Huid. At this rate you could generate 250K/second/core.
 
 ~~~
 $ go test -v -bench .
@@ -60,4 +60,5 @@ use notes
 // a known distant location on the public internet.
 // The uniqueLocation parameter in the NewRuidGen() call
 // should be as unique as possible.
+func NewRuidGen(uniqueLocation string) *RuidGen
 ~~~

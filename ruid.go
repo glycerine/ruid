@@ -21,7 +21,6 @@ func main() {
 }
 
 type RuidGen struct {
-	origLoc       string
 	uniqLoc       [20]byte
 	base64uniqLoc string
 	counter       int64
@@ -31,19 +30,21 @@ type RuidGen struct {
 //
 // NewRuidGen(): uniqueLocation should be a byte
 // sequence that is unique to this specific physical location.
-// Suggestions: a unique external IP address, a hardware
-// mac address, or the traceroute out
+// Suggestions: a hardware
+// mac address, your external ip address, the traceroute out
 // a known distant location on the public internet.
-// The uniqueLocation should be as unique as possible.
-// It will be sha1 hashed down to 20 bytes, so it is allowed
-// to be longer.
-
+// The uniqueLocation parameter in the NewRuidGen() call
+// should be as unique as possible.
+//
+// RuidGen has methods Ruid() and Huid() to generate
+// Ruid and Huid respectively.
+//
 func NewRuidGen(uniqueLocation string) *RuidGen {
 
 	r := &RuidGen{}
-	r.uniqLoc = sha1.Sum([]byte(uniqueLocation))
+	uniqLoc := sha1.Sum([]byte(uniqueLocation))
 	r.pid = int64(os.Getpid())
-	r.base64uniqLoc = base64.URLEncoding.EncodeToString(r.uniqLoc[:])
+	r.base64uniqLoc = base64.URLEncoding.EncodeToString(uniqLoc[:])
 
 	return r
 }
