@@ -5,6 +5,7 @@ import (
 	"crypto/sha1"
 	"crypto/sha512"
 	"encoding/base64"
+	"encoding/binary"
 	"fmt"
 	"os"
 	"time"
@@ -78,27 +79,39 @@ func (r *RuidGen) Ruid() string {
 // Ruid2 adds a random number from /dev/urandom and uses a Sha512 hash instead of Sha1.
 func (r *RuidGen) Ruid2() string {
 
-	randomBytes := getRandomBytes()
+	// generate random bytes
+	randomBytes := getRandomBytes(400)
+
+	// use between 50 - 100 of them. At either end. And in the middle.
+	w1 := binary.LittleEndian.Uint64(randomBytes[:8]) % 50
+	w2 := binary.LittleEndian.Uint64(randomBytes[8:16]) % 50
+	w3 := binary.LittleEndian.Uint64(randomBytes[16:24]) % 50
+	randomBytes = randomBytes[24:]
+
+	ran1 := randomBytes[0 : 50+w1]
+	ran2 := randomBytes[100 : 150+w2]
+	ran3 := randomBytes[200 : 250+w3]
 
 	tm := time.Now()
 	r.counter++
 
-	huid := fmt.Sprintf("|tm:%s|pid:%010d|loc:%s|seq:%020d|random:%x",
+	huid2 := fmt.Sprintf("%s|tm:%s|pid:%010d|%s|loc:%s|seq:%d|%s",
+		ran1,
 		tm.Format(time.RFC3339Nano),
 		r.pid,
+		ran2,
 		r.base64uniqLoc,
 		r.counter,
-		randomBytes)
+		ran3,
+	)
 
-	//res := sha1.Sum([]byte(huid))
-	res := sha512.Sum512([]byte(huid))
+	res := sha512.Sum512([]byte(huid2))
 	ruid := fmt.Sprintf("ruid_v%02d_%s", 2, base64.URLEncoding.EncodeToString(res[:]))
 
 	return ruid
 }
 
-func getRandomBytes() []byte {
-	c := 100
+func getRandomBytes(c int) []byte {
 	b := make([]byte, c)
 	_, err := rand.Read(b)
 	if err != nil {
