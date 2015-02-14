@@ -1,4 +1,4 @@
-package main
+package ruid
 
 import (
 	"crypto/sha1"
@@ -12,13 +12,6 @@ import (
 // Huid: a really unique id, very fast to generate, decodable to be human readable.
 
 const RuidVer = 1
-
-func main() {
-	myExternalIP := "my example location: 10.0.0.1"
-	ruidGen := NewRuidGen(myExternalIP)
-	fmt.Printf("%s\n", string(ruidGen.Ruid()))
-	//fmt.Printf("\n\n sha1 ruid = '%s', len = %d\n", r.Sha1Ruid(), len(r.Sha1Ruid()))
-}
 
 type RuidGen struct {
 	uniqLoc       [20]byte
