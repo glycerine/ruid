@@ -1,10 +1,13 @@
 Ruid: a really unique id
 ================
 
+Update (2015/Feb/14): Riud2 now generates a ruid (version 2) that incorporates 100 bytes from /dev/urandom and then SHA512 hashes it. More, we converted to a library by default for reuse, and moved the command line utilities to cmd/ruidgen and cmd/ruid2gen. Happy Valentines Day!
+
 A Huid is a really unique id. It is very fast to generate, and is base64-decodable to be human readable.
 
 A Ruid is a really unique id. It is very fast to generate, and is an opaque identifier. It is the SHA1 hash of a Huid.
 
+Command line versions of the Ruid and Ruid2 generators are available in cmd/ruidgen and cmd/ruid2gen. Make will install them.
 
 The bytes in a Ruid always start with `ruid_v` and
 are followed by two digits of version identifier and an '_'
