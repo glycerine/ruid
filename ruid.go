@@ -11,8 +11,10 @@ import (
 	"time"
 )
 
-// Ruid: a really unique id, Very fast to generate, opaque identifier.
+// Ruid: a really unique id, very fast to generate, opaque identifier.
 // Huid: a really unique id, very fast to generate, decodable to be human readable.
+// Ruid2: mostly random, opaque and unguessable really-unique id.
+// Tuid: a transparent id, showing what goes into a huid before the reversible base64 encode.
 
 const RuidVer = 1
 
@@ -55,7 +57,21 @@ func (r *RuidGen) Huid() string {
 		r.base64uniqLoc,
 		r.counter)
 
-	return fmt.Sprintf("huid_v%02d_%s", RuidVer, base64.URLEncoding.EncodeToString([]byte(huid)))
+	return fmt.Sprintf("huid_v%02d_%s", 1, base64.URLEncoding.EncodeToString([]byte(huid)))
+}
+
+// transparent version
+func (r *RuidGen) Tuid() string {
+	tm := time.Now()
+	r.counter++
+
+	huid := fmt.Sprintf("|tm:%s|pid:%010d|loc:%s|seq:%020d|",
+		tm.Format(time.RFC3339Nano),
+		r.pid,
+		r.base64uniqLoc,
+		r.counter)
+
+	return fmt.Sprintf("huid_v%02d_%s", 1, huid)
 }
 
 // A Ruid applies a sha1sum to a Huid.
@@ -71,12 +87,13 @@ func (r *RuidGen) Ruid() string {
 		r.counter)
 
 	res := sha1.Sum([]byte(huid))
-	ruid := fmt.Sprintf("ruid_v%02d_%s", RuidVer, base64.URLEncoding.EncodeToString(res[:]))
+	ruid := fmt.Sprintf("ruid_v%02d_%s", 1, base64.URLEncoding.EncodeToString(res[:]))
 
 	return ruid
 }
 
-// Ruid2 adds a random number from /dev/urandom and uses a Sha512 hash instead of Sha1.
+// Ruid2 adds randomness from /dev/urandom and uses a Sha512 hash instead of Sha1.
+// It is really opaque.
 func (r *RuidGen) Ruid2() string {
 
 	// generate random bytes
