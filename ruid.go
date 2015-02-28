@@ -15,6 +15,7 @@ import (
 // Huid: a really unique id, very fast to generate, decodable to be human readable.
 // Ruid2: mostly random, opaque and unguessable really-unique id.
 // Tuid: a transparent id, showing what goes into a huid before the reversible base64 encode.
+// Ruid3: mostly random, opaque and unguessable really-unique id. base36 encoded using characters [a-z0-9].
 
 const RuidVer = 1
 
@@ -96,6 +97,24 @@ func (r *RuidGen) Ruid() string {
 // It is really opaque.
 func (r *RuidGen) Ruid2() string {
 
+	huid2 := r.huid2core()
+
+	res := sha512.Sum512([]byte(huid2))
+	ruid2 := fmt.Sprintf("ruid_v%02d_%s", 2, base64.URLEncoding.EncodeToString(res[:]))
+
+	return ruid2
+}
+
+func getRandomBytes(c int) []byte {
+	b := make([]byte, c)
+	_, err := rand.Read(b)
+	if err != nil {
+		panic(err)
+	}
+	return b
+}
+
+func (r *RuidGen) huid2core() string {
 	// generate random bytes
 	randomBytes := getRandomBytes(400)
 
@@ -121,18 +140,19 @@ func (r *RuidGen) Ruid2() string {
 		r.counter,
 		ran3,
 	)
-
-	res := sha512.Sum512([]byte(huid2))
-	ruid := fmt.Sprintf("ruid_v%02d_%s", 2, base64.URLEncoding.EncodeToString(res[:]))
-
-	return ruid
+	return huid2
 }
 
-func getRandomBytes(c int) []byte {
-	b := make([]byte, c)
-	_, err := rand.Read(b)
-	if err != nil {
-		panic(err)
-	}
-	return b
+// Ruid3 is a Ruid2 whose suffix is base36 encoded using only the letters a-z and the
+// numbers 0-9, and ensure it can be used in places that don't allow characters
+// like '-' or '=' in identifiers.
+func (r *RuidGen) Ruid3() string {
+
+	huid2 := r.huid2core()
+
+	res := sha512.Sum512([]byte(huid2))
+	b := EncodeBytesBase36(res[:])
+
+	ruid3 := fmt.Sprintf("ruid_v%02d_%s", 3, string(b))
+	return ruid3
 }
