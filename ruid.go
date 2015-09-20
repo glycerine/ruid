@@ -75,6 +75,24 @@ func (r *RuidGen) Tuid() string {
 	return fmt.Sprintf("huid_v%02d_%s", 1, huid)
 }
 
+// transparent, only 64 bytes, and limited to [.a-zA-Z0-9_]
+func (r *RuidGen) Tuid64(ipaddr string) string {
+	tm := time.Now().UTC()
+	r.counter++
+
+	idCompactString := string(EncodeBytesBase36(getRandomBytes(16)))
+
+	tuid64 := fmt.Sprintf("%v-%v-%v-%v-%v",
+		idCompactString,
+		tm.Format("20060102_1504s05"),
+		r.pid,
+		ipaddr,
+		r.counter%1000000,
+	)
+
+	return fmt.Sprintf("%s", tuid64[:64])
+}
+
 // A Ruid applies a sha1sum to a Huid.
 func (r *RuidGen) Ruid() string {
 

@@ -4,7 +4,7 @@ import (
 	"math/big"
 	"testing"
 
-	cv "github.com/smartystreets/goconvey/convey"
+	cv "github.com/glycerine/goconvey/convey"
 )
 
 func TestBase36Encode(t *testing.T) {
