@@ -1,7 +1,7 @@
 Ruid: a really unique id
 ================
 
-There are five identifiers defined here: Ruid, Ruid2, Ruid3, Huid, Tuid, and Tuid64.
+There are six identifiers defined here: Ruid, Ruid2, Ruid3, Huid, Tuid, and Tuid64.
 
 
 A Huid is a really unique id. It is very fast to generate, and is base64-decodable to be human readable.
@@ -14,7 +14,7 @@ A Ruid3 is the same as a Ruid2, but encoded using only the characters a-z0-9, he
 
 A Tuid is a transparent version of a Huid.
 
-A Luid64 is a fast, 128-bit random-number based unique identifier that is guaranteed to be all-in less than 64 bytes. It is ascii/base-36 encoded. Example: 07sak24k4n7onqcz0hclmy8gi-1-73377. The last two parts after the first dash are non-random, enabling some tracking of sequence number and origin.
+A Luid64 is a fast, 128-bit random-number based unique identifier that is guaranteed to be all-in less than 64 bytes. It is ascii/base-36 encoded. Example: 07sak24k4n7onqcz0hclmy8gi-1-73377. The last two parts after the first dash are non-random, enabling some tracking of sequence number and origin. They are a sequence number (no more than 6 bytes) and a process id.
 
 Command line versions of the generators are available in cmd/. Make will install them.
 
