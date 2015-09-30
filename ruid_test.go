@@ -60,7 +60,9 @@ func BenchmarkHuid(b *testing.B) {
 func BenchmarkUUID4(b *testing.B) {
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		uuid.NewV4()
+		// if we don't including displaying it, it's not a fair comparison;
+		// the stringification is the slowest part.
+		fmt.Sprintf("%s", uuid.NewV4())
 	}
 }
 
