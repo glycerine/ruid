@@ -1,7 +1,7 @@
 Ruid: a really unique id
 ================
 
-There are six identifiers defined here: Ruid, Ruid2, Ruid3, Huid, Tuid, and Tuid64.
+There are six identifiers defined here: Ruid, Ruid2, Ruid3, Huid, Tuid, and Luid64.
 
 
 A Huid is a really unique id. It is very fast to generate, and is base64-decodable to be human readable.
