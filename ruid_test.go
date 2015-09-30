@@ -74,3 +74,14 @@ func BenchmarkRuid2(b *testing.B) {
 		ruidGen.Ruid2()
 	}
 }
+
+func BenchmarkLuid64(b *testing.B) {
+
+	myExternalIP := "my example location"
+	ruidGen := NewRuidGen(myExternalIP)
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		ruidGen.Luid64()
+	}
+}
