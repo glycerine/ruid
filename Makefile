@@ -5,3 +5,4 @@ all:
 	cd cmd/ruid3gen; go install
 	cd cmd/huidgen; go install
 	cd cmd/tuidgen; go install
+	cd cmd/luid64gen; go install

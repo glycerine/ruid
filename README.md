@@ -1,9 +1,8 @@
 Ruid: a really unique id
 ================
 
-There are five identifiers defined here: Ruid, Ruid2, Ruid3, Huid, and Tuid.
+There are five identifiers defined here: Ruid, Ruid2, Ruid3, Huid, Tuid, and Tuid64.
 
-Update (2015/Feb/14): Riud2 now generates a ruid (version 2) that incorporates 100 bytes from /dev/urandom and then SHA512 hashes it. More, we converted to a library by default for reuse, and moved the command line utilities to cmd/ruidgen and cmd/ruid2gen. Happy Valentines Day!
 
 A Huid is a really unique id. It is very fast to generate, and is base64-decodable to be human readable.
 
@@ -13,8 +12,11 @@ A Ruid2 is a really unique id, that starts with a Huid and then adds 100 bytes f
 
 A Ruid3 is the same as a Ruid2, but encoded using only the characters a-z0-9, hence in base 36. This is easier to convey over the phone or through channels that don't like '-' or '='. It is always 109 bytes long, including the 9 bytes prefix 'ruid_v03_'. Example: 'ruid_v03_0zgo9tsz3r505khm87w7cgebdt3nrkbg773zvnyu32i14z4vkokqkr2y9jn34zeyxtj4tecoczgl2i1rmcs7yfngybp8zsybqbni'. The 100 bytes are a consequence of base36 encoding a 512 bit SHA512 hash, as Ceil(512 * log(2,36)) == 100.
 
+A Tuid is a transparent version of a Huid.
 
-Command line versions of the Ruid and Ruid2 generators are available in cmd/ruidgen and cmd/ruid2gen. Make will install them.
+A Luid64 is a fast, 128-bit random-number based unique identifier that is guaranteed to be all-in less than 64 bytes. It is ascii/base-36 encoded. Example: 07sak24k4n7onqcz0hclmy8gi-1-73377. The last two parts after the first dash are non-random, enabling some tracking of sequence number and origin.
+
+Command line versions of the generators are available in cmd/. Make will install them.
 
 The bytes in a Ruid always start with `ruid_v` and
 are followed by two digits of version identifier and an '_'

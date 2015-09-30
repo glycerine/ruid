@@ -16,6 +16,7 @@ import (
 // Ruid2: mostly random, opaque and unguessable really-unique id.
 // Tuid: a transparent id, showing what goes into a huid before the reversible base64 encode.
 // Ruid3: mostly random, opaque and unguessable really-unique id. base36 encoded using characters [a-z0-9].
+// Luid64: a limited-to-64-bytes really unique id, very fast to generate. base36 encoded and uses the characters [a-z0-09] and the dash '-'. The base36 character limit means they can be read easily over the phone. Includes a counter and pid, so not opaque and reveals some information about the origin and communication sequence.
 
 const RuidVer = 1
 
@@ -75,8 +76,11 @@ func (r *RuidGen) Tuid() string {
 	return fmt.Sprintf("huid_v%02d_%s", 1, huid)
 }
 
-// transparent, at most 64 bytes, and limited to [.a-zA-Z0-9_]
-func (r *RuidGen) Tuid64() string {
+// Limited to at most 64 bytes. Uses [a-z0-9] and the dash '-' character;
+// the base36 character limit means they can be read easily over the phone.
+// Includes a counter than wraps and a PID, so does give some origin tracking
+// capability.
+func (r *RuidGen) Luid64() string {
 	r.counter++
 
 	idCompactString := string(EncodeBytesBase36(getRandomBytes(16)))

@@ -9,5 +9,5 @@ import (
 func main() {
 	myExternalIP := ruid.GetExternalIP()
 	ruidGen := ruid.NewRuidGen(myExternalIP)
-	fmt.Printf("%s\n", string(ruidGen.Tuid64()))
+	fmt.Printf("%s\n", string(ruidGen.Luid64()))
 }
